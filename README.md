@@ -1,1 +1,1 @@
-# processing-majic
+# @data-fair/processing-majic
