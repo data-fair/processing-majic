@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Anox-Leo/processing-majic.git"
+    "url": "git+https://github.com/data-fair/processing-majic.git"
   },
   "keywords": [
     "data-fair-processings-plugin"
@@ -18,9 +18,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Anox-Leo/processing-majic/issues"
+    "url": "https://github.com/data-fair/processing-majic/issues"
   },
-  "homepage": "https://github.com/Anox-Leo/processing-majic#readme",
+  "homepage": "https://github.com/data-fair/processing-majic#readme",
   "devDependencies": {
     "@data-fair/processings-test-utils": "^0.5.1",
     "config": "^3.3.9",
