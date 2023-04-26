@@ -1,11 +1,11 @@
 process.env.NODE_ENV = 'test'
 const config = require('config')
 const testUtils = require('@data-fair/processings-test-utils')
-// const processData = require('../lib/process.js')
-// const download = require('../lib/download.js')
-// const upload = require('../lib/upload.js')
+const processData = require('../lib/process.js')
+const download = require('../lib/download.js')
+const upload = require('../lib/upload.js')
 const majicProcessing = require('../')
-/*
+
 describe('Download', function () {
   it('should download a zip', async function () {
     this.timeout(1000000)
@@ -52,7 +52,7 @@ describe('Upload', function () {
     }, config, false)
     await upload(context.processingConfig, context.tmpDir, context.axios, context.log, context.patchConfig)
   })
-}) */
+})
 
 describe('MAJIC', function () {
   it('should download, process files and upload a csv on the staging', async function () {
