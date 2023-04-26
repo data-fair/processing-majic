@@ -231,16 +231,16 @@
     "x-cardinality": 10,
     "description": "",
     "enum": [
-      "Personnes morales non remarquables",
-      "État",
-      "Région",
-      "Département",
-      "Commune",
-      "Office HLM",
-      "Personnes morales représentant des sociétés d’économie mixte",
-      "Copropriétaires",
-      "Associés",
-      "Établissements publics ou organismes associés"
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
     ],
     "x-labels": {
       "0": "Personnes morales non remarquables",
