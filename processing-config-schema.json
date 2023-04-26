@@ -51,7 +51,7 @@
             "filter":{
                 "type": "string",
                 "title": "Département à utiliser",
-                "description": "Le département peut être au format 2 chiffres (ex: 56) et 3 chiffres (ex: 974)"
+                "description": "Le département doit être au format 2 chiffres (ex: 56, 01) ou 3 chiffres pour les DROM-COM (ex: 974)"
             },
             "processFile": {
                 "type": "string",
