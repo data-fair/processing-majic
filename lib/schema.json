@@ -232,16 +232,28 @@
     "description": "",
     "enum": [
       "Personnes morales non remarquables",
-      "Commune",
       "État",
-      "Établissements publics ou organismes associés",
-      "Office HLM",
-      "Département",
       "Région",
+      "Département",
+      "Commune",
+      "Office HLM",
       "Personnes morales représentant des sociétés d’économie mixte",
       "Copropriétaires",
-      "Associés"
+      "Associés",
+      "Établissements publics ou organismes associés"
     ],
+    "x-labels": {
+      "0": "Personnes morales non remarquables",
+      "1": "État",
+      "2": "Région",
+      "3": "Département",
+      "4": "Commune",
+      "5": "Office HLM",
+      "6": "Personnes morales représentant des sociétés d’économie mixte",
+      "7": "Copropriétaires",
+      "8": "Associés",
+      "9": "Établissements publics ou organismes associés"
+    },
     "label": "Groupe personne"
   },
   {
