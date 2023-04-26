@@ -1,0 +1,63 @@
+{
+    "type": "object",
+    "x-display": "tabs",
+    "required": ["datasetMode"],
+    "allOf": [{
+      "title": "Jeu de données",
+      "oneOf": [{
+        "title": "Créer un jeu de données",
+        "required": ["dataset"],
+        "properties": {
+          "datasetMode": { "type": "string", "const": "create", "title": "Action" },
+          "dataset": {
+            "type": "object",
+            "properties": {
+              "title": {"type": "string", "title": "Titre (laissez vide pour utiliser le nom de fichier téléchargé)"}
+            }
+          }
+        }
+      }, {
+        "title": "Mettre à jour un jeu de données (fichier)",
+        "required": ["dataset"],
+        "properties": {
+          "datasetMode": { "type": "string", "const": "update" },
+          "dataset": {
+            "type": "object",
+            "title": "Jeu de donnée existant",
+            "x-fromUrl": "{context.dataFairUrl}/api/v1/datasets?q={q}&select=id,title&{context.ownerFilter}",
+            "x-itemsProp": "results",
+            "x-itemTitle": "title",
+            "x-itemKey": "id",
+            "properties": {
+              "id": {"type": "string", "title": "Identifiant"},
+              "title": {"type": "string", "title": "Titre"}
+            }
+          }
+          
+        }, 
+        "forceUpdate": {
+            "title": "Forcer la mise à jour",
+            "description": "La mise à jour forcée permet de remettre à jour le schéma en cas de modification sur le jeu de donnée",
+            "type": "boolean",
+            "default": false
+        }
+      }]
+    }, {
+        "title": "Paramètres",
+        "properties": {
+            "url":{
+                "type": "string",
+                "title": "l'Url d'accès aux données sources (source zip)"
+            },
+            "filter":{
+                "type": "string",
+                "title": "Département à utiliser",
+                "description": "Le département peut être au format 2 chiffres (ex: 56) et 3 chiffres (ex: 974)"
+            },
+            "processFile": {
+                "type": "string",
+                "title": "Fichiers à traiter"
+            }
+        }
+    }]
+}
