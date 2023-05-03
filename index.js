@@ -14,7 +14,7 @@ exports.run = async ({ pluginConfig, processingConfig, tmpDir, axios, log, patch
   if (processingConfig.datasetMode === 'update' && !processingConfig.forceUpdate) {
     try {
       await log.step('Vérification de l\'en-tête du jeu de données')
-      const schemaActuelDataset = (await axios.get(`api/v1/datasets/${processingConfig.dataset.id}/schema`, { params: { calculated: false } })).data.map((elem) => `"${elem.key}"`).join(';').replace(/['"]+/g, '')
+      const schemaActuelDataset = (await axios.get(`api/v1/datasets/${processingConfig.dataset.id}/schema`, { params: { calculated: false } })).data.map((elem) => `"${elem.key}"`).join(',').replace(/['"]+/g, '')
 
       let files = await fs.readdir(tmpDir)
       files = files.filter(file => file.endsWith('.csv'))
