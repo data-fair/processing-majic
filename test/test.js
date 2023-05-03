@@ -10,7 +10,7 @@ describe('MAJIC', function () {
       pluginConfig: {
       },
       processingConfig: {
-        clearFiles: false,
+        clearFiles: true,
         datasetMode: 'create',
         dataset: { title: 'Parcelles des personnes morales - MAJIC', id: 'parcelles-44' },
         datasetID: 'fichiers-des-locaux-et-des-parcelles-des-personnes-morales',

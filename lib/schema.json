@@ -15,7 +15,7 @@
   {
     "key": "code_commune",
     "title": "Code commune",
-    "type": "integer",
+    "type": "string",
     "x-refersTo": "http://rdf.insee.fr/def/geo#codeCommune",
     "x-capabilities": {
       "insensitive": false,
@@ -97,7 +97,7 @@
       "textStandard": false
     },
     "description": "Subdivision fiscale de la parcelle",
-    "separator": ";"
+    "separator": " "
   },
   {
     "key": "nature_culture",
@@ -139,7 +139,7 @@
       "VE": "Vergers",
       "VI": "Vignes"
     },
-    "separator": ";"
+    "separator": " "
   },
   {
     "key": "contenance_suf",
@@ -152,7 +152,7 @@
       "textStandard": false
     },
     "description": "Contenance de la subdivision fiscale en centiare (1 ca = 1 m²)",
-    "separator": ";"
+    "separator": " "
   },
   {
     "key": "code_droit",
@@ -192,7 +192,7 @@
       "M": "Occupant d'une parcelle appartenant au département de Mayotte ou à l'Etat (associé avec P)",
       "Z": "Gestionnaire d'un bien de l'Etat"
     },
-    "separator": ";"
+    "separator": " "
   },
   {
     "key": "numero_majic",
