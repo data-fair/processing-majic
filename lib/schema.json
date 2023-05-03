@@ -1,96 +1,73 @@
 [
   {
-    "key": "Département",
-    "x-originalName": "Département",
+    "key": "departement",
+    "title": "Département",
     "type": "string",
     "x-refersTo": "http://rdf.insee.fr/def/geo#codeDepartement",
-    "ignoreDetection": true,
-    "x-cardinality": 97,
-    "description": "",
-    "label": "Département"
+    "description": "Code département de la parcelle"
   },
   {
-    "key": "Code_Commune",
-    "x-originalName": "Code Commune",
+    "key": "code_commune",
+    "title": "Code commune",
     "type": "string",
     "x-refersTo": "http://rdf.insee.fr/def/geo#codeCommune",
-    "ignoreDetection": true,
-    "x-cardinality": 34967,
-    "description": "",
-    "label": "Code Commune"
+    "description": "Code de la commune de la parcelle"
   },
   {
-    "key": "Nom_Commune",
-    "x-originalName": "Nom Commune",
+    "key": "nom_commune",
+    "title": "Nom Commune",
     "type": "string",
     "x-refersTo": "http://schema.org/City",
-    "x-cardinality": 32782,
-    "description": "",
-    "label": "Nom Commune"
+    "description": "Nom de la commune de la parcelle"
   },
   {
-    "key": "Adresse",
-    "x-originalName": "Adresse",
+    "key": "adresse",
+    "title": "Adresse",
     "type": "string",
     "x-refersTo": "http://schema.org/address",
-    "x-cardinality": 627320,
-    "description": "",
-    "label": "Adresse"
+    "description": "Adresse de la parcelle"
   },
   {
-    "key": "Code_parcelle",
-    "x-originalName": "Code parcelle",
+    "key": "code_parcelle",
+    "title": "Code parcelle",
     "type": "string",
     "format": "uri-reference",
     "x-refersTo": "http://dbpedia.org/ontology/codeLandRegistry",
-    "x-cardinality": 4789295,
-    "description": "",
-    "label": "Code parcelle"
+    "description": "Code de la parcelle"
   },
   {
-    "key": "Code_voie_MAJIC",
-    "x-originalName": "Code voie MAJIC",
+    "key": "code_voie_majic",
+    "title": "Code voie MAJIC",
     "type": "integer",
-    "x-cardinality": 9257,
-    "description": "",
-    "label": "Code voie MAJIC"
+    "description": "Code de la voie dans la base MAJIC"
   },
   {
-    "key": "Code_voie_rivoli",
-    "x-originalName": "Code voie rivoli",
+    "key": "code_voie_rivoli",
+    "title": "Code voie rivoli",
     "type": "string",
-    "format": "uri-reference",
-    "x-cardinality": 21143,
-    "description": "",
-    "label": "Code voie rivoli"
+    "description": "Code de la voie dans la base Rivoli"
   },
   {
-    "key": "Contenance_parcelle",
-    "x-originalName": "Contenance parcelle",
+    "key": "contenance_parcelle",
+    "title": "Contenance parcelle",
     "type": "integer",
-    "x-cardinality": 242788,
-    "description": "",
-    "label": "Contenance parcelle"
+    "description": "Contenance de la parcelle en centiare (1 ca = 1 m²)" 
   },
   {
     "key": "SUF",
-    "x-originalName": "SUF",
+    "title": "SUF",
     "type": "string",
-    "format": "uri-reference",
-    "x-cardinality": 559,
-    "description": "",
-    "label": "SUF"
+    "description": "Subdivision fiscale de la parcelle",
+    "separator": ";"
   },
   {
-    "key": "Nature_culture",
-    "x-originalName": "Nature culture",
+    "key": "nature_culture",
+    "title": "Nature culture",
     "type": "string",
-    "format": "uri-reference",
-    "x-cardinality": 27,
-    "description": "",
+    "description": "Nature culture de la subdivision fiscale de la parcelle",
     "x-labels": {
       "AB": "Terrains à bâtir",
-      "AG": "Terrains d’agrément",
+      "AG": "Terrains d'agrément",
       "B": "Bois",
       "BF": "Futaies Feuillues",
       "BM": "Futaies Mixtes",
@@ -117,52 +94,20 @@
       "VE": "Vergers",
       "VI": "Vignes"
     },
-    "enum": [
-      "S",
-      "T",
-      "L",
-      "P",
-      "BT",
-      "AB",
-      "BR",
-      "VI",
-      "BS",
-      "B",
-      "J",
-      "AG",
-      "E",
-      "PA",
-      "CH",
-      "VE",
-      "BF",
-      "BP",
-      "BM",
-      "CA",
-      "PC",
-      "PP",
-      "PH",
-      "LB",
-      "PE",
-      "TP",
-      "BO"
-    ],
-    "label": "Nature culture"
+    "separator": ";"
   },
   {
-    "key": "Contenance_SUF",
-    "x-originalName": "Contenance SUF",
+    "key": "contenance_suf",
+    "title": "Contenance SUF",
     "type": "integer",
-    "x-cardinality": 236883,
-    "description": "",
-    "label": "Contenance SUF"
+    "description": "Contenance de la subdivision fiscale en centiare (1 ca = 1 m²)",
+    "separator": ";"
   },
   {
-    "key": "Code_droit",
-    "x-originalName": "Code droit",
+    "key": "code_droit",
+    "title": "Code droit",
     "type": "string",
-    "format": "uri-reference",
-    "x-cardinality": 18,
-    "description": "",
+    "description": "Code droit réel ou particulier attaché à la parcelle",
     "x-labels": {
       "P": "Propriétaire",
       "U": "Usufruitier (associé avec N)",
@@ -172,76 +117,44 @@
       "F": "Foncier (associé avec D ou T)",
       "T": "Ténuyer (associé avec F)",
       "D": "Domanier (associé avec F)",
-      "V": "Bailleur d’un bail à réhabilitation (associé avec W)",
-      "W": "Preneur d’un bail à réhabilitation (associé avec V)",
+      "V": "Bailleur d'un bail à réhabilitation (associé avec W)",
+      "W": "Preneur d'un bail à réhabilitation (associé avec V)",
       "A": "Locataire-Attributaire (associé avec P)",
       "E": "Emphytéote (associé avec P)",
       "K": "Antichrésiste (associé avec P)",
+      "L": "Fonctionnaire logé",
       "G": "Gérant, mandataire, gestionnaire",
       "S": "Syndic de copropriété",
       "H": "Associé dans une société en transparence fiscale (associé avec P)",
-      "O": "Autorisation d’occupation temporaire (70 ans)",
-      "C": "Fiduciaire"
+      "O": "Autorisation d'occupation temporaire (70 ans)",
+      "J": "Jeune agriculteur",
+      "Q": "Questionnaire taxe sur les bureux (Île-de-France)",
+      "X": "La Poste Occupant et propriétaire",
+      "Y": "La Poste Occupant et non propriétaire",
+      "C": "Fiduciaire",
+      "M": "Occupant d'une parcelle appartenant au département de Mayotte ou à l'Etat (associé avec P)",
+      "Z": "Gestionnaire d'un bien de l'Etat"
     },
-    "enum": [
-      "P",
-      "G",
-      "S",
-      "N",
-      "E",
-      "R",
-      "B",
-      "U",
-      "F",
-      "T",
-      "W",
-      "V",
-      "D",
-      "O",
-      "C",
-      "A",
-      "H",
-      "K"
-    ],
-    "label": "Code droit"
+    "separator": ";"
   },
   {
-    "key": "N°_MAJIC",
-    "x-originalName": "N° MAJIC",
+    "key": "numero_majic",
+    "title": "Numéro MAJIC",
     "type": "string",
-    "format": "uri-reference",
-    "x-cardinality": 131722,
-    "description": "",
-    "label": "N° MAJIC"
+    "description": "numéro personne présent dans l'application majic"
   },
   {
-    "key": "N°_SIREN",
-    "x-originalName": "N° SIREN",
+    "key": "numero_siren",
+    "title": "Numéro SIREN",
     "type": "string",
-    "format": "uri-reference",
     "x-refersTo": "http://dbpedia.org/ontology/siren",
-    "x-cardinality": 640350,
-    "description": "",
-    "label": "N° SIREN"
+    "description": "Numéro SIREN du propriétaire de la parcelle"
   },
   {
-    "key": "Groupe_personne",
-    "x-originalName": "Groupe personne",
+    "key": "groupe_personne",
+    "title": "Groupe personne",
     "type": "string",
-    "x-cardinality": 10,
-    "description": "",
-    "enum": [
-      "0",
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9"
-    ],
+    "description": "Groupe de personne auquel appartient le propriétaire de la parcelle",
     "x-labels": {
       "0": "Personnes morales non remarquables",
       "1": "État",
@@ -249,37 +162,29 @@
       "3": "Département",
       "4": "Commune",
       "5": "Office HLM",
-      "6": "Personnes morales représentant des sociétés d’économie mixte",
+      "6": "Personnes morales représentant des sociétés d'économie mixte",
       "7": "Copropriétaires",
       "8": "Associés",
       "9": "Établissements publics ou organismes associés"
-    },
-    "label": "Groupe personne"
+    }
   },
   {
-    "key": "Code_forme_juridique",
-    "x-originalName": "Code forme juridique",
+    "key": "code_forme_juridique",
+    "title": "Code forme juridique",
     "type": "string",
-    "format": "uri-reference",
-    "x-cardinality": 214,
-    "description": "",
-    "label": "Code forme juridique"
+    "description": "Forme juridique du propriétaire de la parcelle"
   },
   {
-    "key": "Forme_juridique_abrégée",
-    "x-originalName": "Forme juridique abrégée",
+    "key": "forme_juridique_abregee",
+    "title": "Forme juridique abrégée",
     "type": "string",
-    "format": "uri-reference",
-    "x-cardinality": 70,
-    "description": "",
+    "description": "Forme juridique abrégée du propriétaire de la parcelle",
     "label": "Forme juridique abrégée"
   },
   {
-    "key": "Dénomination",
-    "x-originalName": "Dénomination",
+    "key": "denomination",
+    "title": "Dénomination",
     "type": "string",
-    "x-cardinality": 375561,
-    "description": "",
-    "label": "Dénomination"
+    "description": "Dénomination du propriétaire de la parcelle"
   }
 ]

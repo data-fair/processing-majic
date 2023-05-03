@@ -6,8 +6,7 @@ const path = require('path')
 
 exports.run = async ({ pluginConfig, processingConfig, tmpDir, axios, log, patchConfig }) => {
   await log.step('Configuration')
-  await log.info(`Fichiers à traiter : ${processingConfig.processFile}`)
-  await log.info(`Supprimer les fichiers téléchargés : ${processingConfig.clearFiles}`)
+  await log.info(`Jeu de données à traiter : ${processingConfig.datasetID}`)
   await log.info(`Mise à jour forcée : ${processingConfig.forceUpdate}`)
 
   await download(processingConfig, tmpDir, axios, log)
@@ -15,7 +14,7 @@ exports.run = async ({ pluginConfig, processingConfig, tmpDir, axios, log, patch
   if (processingConfig.datasetMode === 'update' && !processingConfig.forceUpdate) {
     try {
       await log.step('Vérification de l\'en-tête du jeu de données')
-      const schemaActuelDataset = (await axios.get(`api/v1/datasets/${processingConfig.dataset.id}/schema`, { params: { calculated: false } })).data.map((elem) => `"${elem.key}"`).join(';')
+      const schemaActuelDataset = (await axios.get(`api/v1/datasets/${processingConfig.dataset.id}/schema`, { params: { calculated: false } })).data.map((elem) => `"${elem.key}"`).join(';').replace(/['"]+/g, '')
 
       let files = await fs.readdir(tmpDir)
       files = files.filter(file => file.endsWith('.csv'))
