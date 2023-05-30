@@ -10,6 +10,7 @@ exports.run = async ({ pluginConfig, processingConfig, tmpDir, axios, log, patch
   await log.info(`Mise à jour forcée : ${processingConfig.forceUpdate}`)
 
   await download(processingConfig, tmpDir, axios, log)
+  await process(processingConfig, tmpDir, log)
 
   if (processingConfig.datasetMode === 'update' && !processingConfig.forceUpdate) {
     try {
@@ -41,7 +42,6 @@ exports.run = async ({ pluginConfig, processingConfig, tmpDir, axios, log, patch
     }
   }
 
-  await process(processingConfig, tmpDir, log)
   await upload(processingConfig, tmpDir, axios, log, patchConfig)
   if (processingConfig.clearFiles) {
     await fs.emptyDir(tmpDir)
