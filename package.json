@@ -1,6 +1,6 @@
 {
   "name": "@data-fair/processing-majic",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Load majic database into a data-fair dataset",
   "main": "index.js",
   "scripts": {
