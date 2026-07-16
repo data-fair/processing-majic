@@ -2,7 +2,7 @@
   {
     "key": "departement",
     "title": "Département",
-    "type": "integer",
+    "type": "string",
     "x-refersTo": "http://rdf.insee.fr/def/geo#codeDepartement",
     "x-capabilities": {
       "insensitive": false,
@@ -144,7 +144,7 @@
   {
     "key": "contenance_suf",
     "title": "Contenance SUF",
-    "type": "integer",
+    "type": "string",
     "x-capabilities": {
       "insensitive": false,
       "textAgg": false,
@@ -220,7 +220,7 @@
   {
     "key": "groupe_personne",
     "title": "Groupe personne",
-    "type": "integer",
+    "type": "string",
     "x-capabilities": {
       "textStandard": false
     },
@@ -241,7 +241,7 @@
   {
     "key": "code_forme_juridique",
     "title": "Code forme juridique",
-    "type": "integer",
+    "type": "string",
     "x-capabilities": {
       "textStandard": false
     },
