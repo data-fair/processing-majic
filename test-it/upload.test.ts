@@ -9,14 +9,15 @@ describe('displayBytes', () => {
   it('formats megabytes', () => { assert.match(displayBytes(5_000_000), /Mo$/) })
 })
 
-// Regression test: 0.2.8 set schema[].separator from the (unset) processing
-// config, so JSON.stringify happened to drop it and production's dataset
-// schema carries no separator field. uploadSchema strips it explicitly now;
-// this locks that behaviour in (lib/schema.json has some fields with a
-// separator, used only to join multi-valued CSV columns while processing).
+// The four aggregated columns are comma-joined by process.ts. Declaring the
+// separator makes data-fair index them as multi-valued, so a facet on
+// nature_culture sees "BS,T" as two values instead of one opaque string.
+// 0.2.8 read separator from an unset processing config, so JSON.stringify
+// dropped it and production ended up with none at all; we send it as-is now.
 describe('uploadSchema (schema sent on dataset creation/forced update)', () => {
-  it('carries no field-level separator, matching production', () => {
-    for (const field of uploadSchema) assert.ok(!('separator' in field))
+  it('carries the "," separator on the aggregated fields', () => {
+    const withSep = uploadSchema.filter((f: { separator?: string }) => f.separator === ',').map((f: { key: string }) => f.key)
+    assert.deepEqual(withSep, ['SUF', 'nature_culture', 'contenance_suf', 'code_droit'])
   })
   it('keeps the same field count and keys as lib/schema.json', () => {
     assert.equal(uploadSchema.length, schema.length)

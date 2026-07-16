@@ -7,9 +7,7 @@ import type { ProcessingContext } from '@data-fair/lib-common-types/processings.
 import type { ProcessingConfig } from '#types/processingConfig/index.ts'
 import schema from './schema.json' with { type: 'json' }
 
-// 0.2.8 set schema[].separator from the (unset) config, so JSON.stringify dropped it:
-// production's dataset schema carries no separator. Keep it that way.
-export const uploadSchema = schema.map(({ separator, ...field }: Record<string, unknown>) => field)
+export const uploadSchema = schema
 
 export const displayBytes = (aSize: number): string => {
   aSize = Math.abs(parseInt(String(aSize), 10))
