@@ -225,6 +225,9 @@
       "textStandard": false
     },
     "description": "Groupe de personne auquel appartient le propriétaire de la parcelle",
+    "x-transform": {
+      "type": "string"
+    },
     "x-labels": {
       "0": "Personnes morales non remarquables",
       "1": "État",

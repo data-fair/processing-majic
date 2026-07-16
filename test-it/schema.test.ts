@@ -47,4 +47,15 @@ describe('output schema (frozen — the map depends on it)', () => {
       denomination: 'string'
     })
   })
+
+  // Every value of groupe_personne is a single digit "0".."9". data-fair's
+  // CSV sniffer samples raw values top-down and, seeing only digits, infers
+  // type "integer" — overriding the declared "string" (confirmed against a
+  // full 17.6M-row run). x-labels can only be applied to a string field, so
+  // without this pin the map's legend silently stops working. x-transform.type
+  // is the one property data-fair re-applies after the sniff-driven override.
+  it('pins groupe_personne as string via x-transform (it looks all-numeric to the CSV sniffer)', () => {
+    const field = schema.find((f: { key: string }) => f.key === 'groupe_personne') as { 'x-transform'?: { type?: string } }
+    assert.equal(field['x-transform']?.type, 'string')
+  })
 })
