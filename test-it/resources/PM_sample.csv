@@ -1,0 +1,5 @@
+Département;Code Direction;Code Commune;Nom de la commune;Préfixe;Section;N° plan;N° voirie;Indice de répétition;Code voie MAJIC;Code voie Rivoli;Nature voie;Nom voie;Contenance;SUF;Nature culture;Contenance;Code droit - par;N° Majic - par;N° SIREN - par;Groupe personne - par;Forme juridique - par;Forme juridique abrégée - par;Dénomination - par
+01;0;001;L'ABERGEMENT-CLEMENCIAT;; A;0018;;;00010;B010;;CHAMP MACONNAIS;60;A;BS - Taillis sous Futaies;30;P - Propriétaire;PBBQWS;U21651730;0 - Personnes morales non remarquables ;6540;SCI;SOCIÉTÉ IMMOBILIÈRE DU HÉRISSON
+01;0;001;L'ABERGEMENT-CLEMENCIAT;; A;0018;;;00010;B010;;CHAMP MACONNAIS;60;B;T - Terre;30;P - Propriétaire;PBBQWS;U21651730;0 - Personnes morales non remarquables ;6540;SCI;SOCIÉTÉ IMMOBILIÈRE DU HÉRISSON
+90;0;001;ANDELNANS;; AC;0004;;;00058;B058;;PRES DU RAT;1713;A;P - Prés;856;P - Propriétaire;PBBQXX;351864459;0;6540;SCI;SCI LE MOULIN
+75;0;115;PARIS 15;;FG;0011;;;00000;0000;;;100;A;S - Sols;100;G - Gérant, mandataire, gestionnaire;PXYZ12;217500016;8 - Associés;9100;EPIC;AÉROPORT DE PARIS

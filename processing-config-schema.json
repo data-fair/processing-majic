@@ -1,64 +1,76 @@
 {
-    "type": "object",
-    "x-display": "tabs",
-    "required": ["datasetMode"],
-    "allOf": [{
+  "type": "object",
+  "layout": "tabs",
+  "required": ["datasetMode", "datasetID"],
+  "allOf": [
+    {
       "title": "Jeu de données",
-      "oneOf": [{
-        "title": "Créer un jeu de données",
-        "required": ["dataset"],
-        "properties": {
-          "datasetMode": { "type": "string", "const": "create", "title": "Action" },
-          "dataset": {
-            "type": "object",
-            "properties": {
-              "title": {"type": "string", "title": "Titre (laissez vide pour utiliser le nom de fichier téléchargé)"}
+      "default": { "datasetMode": "create", "dataset": { "title": "Parcelles des personnes morales - MAJIC" } },
+      "oneOf": [
+        {
+          "title": "Créer un jeu de données",
+          "required": ["dataset"],
+          "properties": {
+            "datasetMode": { "type": "string", "const": "create", "title": "Action" },
+            "dataset": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string", "title": "Titre (laissez vide pour utiliser le nom de fichier téléchargé)" }
+              }
             }
           }
-        }
-      }, {
-        "title": "Mettre à jour un jeu de données (fichier)",
-        "required": ["dataset"],
-        "properties": {
-          "datasetMode": { "type": "string", "const": "update" },
-          "dataset": {
-            "type": "object",
-            "title": "Jeu de donnée existant",
-            "x-fromUrl": "{context.dataFairUrl}/api/v1/datasets?q={q}&select=id,title&{context.ownerFilter}",
-            "x-itemsProp": "results",
-            "x-itemTitle": "title",
-            "x-itemKey": "id",
-            "properties": {
-              "id": {"type": "string", "title": "Identifiant"},
-              "title": {"type": "string", "title": "Titre"}
-            }
-          }, 
-          "forceUpdate": {
+        },
+        {
+          "title": "Mettre à jour un jeu de données (fichier)",
+          "required": ["dataset"],
+          "properties": {
+            "datasetMode": { "type": "string", "const": "update" },
+            "dataset": {
+              "type": "object",
+              "title": "Jeu de données à mettre à jour",
+              "layout": {
+                "getItems": {
+                  "url": "${context.dataFairUrl}/api/v1/datasets?select=id,title&${context.ownerFilter}&raw=true",
+                  "qSearchParam": "q",
+                  "itemsResults": "data.results",
+                  "itemTitle": "item.title",
+                  "itemKey": "item.id"
+                }
+              },
+              "properties": {
+                "id": { "type": "string", "title": "Identifiant" },
+                "title": { "type": "string", "title": "Titre" }
+              }
+            },
+            "forceUpdate": {
               "title": "Forcer la mise à jour",
-              "description": "La mise à jour forcée permet de remettre à jour le schéma en cas de modification sur le jeu de donnée",
+              "description": "Permet de remettre à jour le schéma en cas de modification sur le jeu de données",
               "type": "boolean",
               "default": false
+            }
           }
         }
-      }]
-    }, {
-        "title": "Paramètres",
-        "properties": {
-            "datasetID":{
-              "type": "string",
-              "title": "ID dataset data.gouv.fr",
-              "description": "Identifiant du jeu de données à utiliser sur le portail data.gouv.fr (ex: repertoire-national-des-associations)"
-            },
-            "filter":{
-                "type": "string",
-                "title": "Département à utiliser",
-                "description": "Le département doit être au format 2 chiffres (ex: 56, 01) ou 3 chiffres pour les DROM-COM (ex: 974)"
-            },
-            "separator":{
-                "type": "string",
-                "title": "Séparateur de colonnes",
-                "description": "Le séparateur de colonnes utilisé dans le fichier CSV pour les champs multivalués (ex: , ou ;)"
-            }
+      ]
+    },
+    {
+      "title": "Paramètres",
+      "properties": {
+        "datasetID": {
+          "type": "string",
+          "title": "ID dataset data.gouv.fr",
+          "description": "Identifiant du jeu de données à utiliser sur le portail data.gouv.fr (ex: fichiers-des-locaux-et-des-parcelles-des-personnes-morales)"
+        },
+        "filter": {
+          "type": "string",
+          "title": "Département à utiliser",
+          "description": "Le département doit être au format 2 chiffres (ex: 56, 01) ou 3 chiffres pour les DROM-COM (ex: 974). Laissez vide pour tous les départements."
+        },
+        "clearFiles": {
+          "type": "boolean",
+          "title": "Vider les fichiers temporaires en fin de traitement",
+          "default": true
         }
-    }]
+      }
+    }
+  ]
 }
