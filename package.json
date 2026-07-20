@@ -1,6 +1,6 @@
 {
   "name": "@data-fair/processing-majic",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Load MAJIC (parcelles des personnes morales) database into a data-fair dataset",
   "main": "index.ts",
   "type": "module",
