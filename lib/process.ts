@@ -1,12 +1,17 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { parse } from 'csv-parse/sync'
-import { stringify as csvStringify } from 'csv-stringify/sync'
+import { Readable } from 'stream'
+import { pipeline } from 'stream/promises'
+import { parse } from 'csv-parse'
+import { stringify as csvStringify } from 'csv-stringify'
+import { stringify as csvStringifySync } from 'csv-stringify/sync'
 import type { ProcessingContext } from '@data-fair/lib-common-types/processings.js'
 import type { ProcessingConfig } from '#types/processingConfig/index.ts'
 import schema from './schema.json' with { type: 'json' }
 
 const fields = schema.map((field: { key: string }) => field.key)
+
+export const OUTPUT_FILE = 'Parcelles des personnes morales.csv'
 
 let shouldBeStopped = false
 export const setShouldBeStopped = (v: boolean) => { shouldBeStopped = v }
@@ -24,80 +29,80 @@ export const parseGroupe = (raw: string): string => {
   return code.includes('A') ? code.replace('A', '') : code
 }
 
-type Parcelle = {
-  departement: string
-  codeCommune: string
-  nomCommune: string
-  adresse: string
-  codeParcelle: string
-  codeVoieMajic: string
-  codeVoieRivoli: string
-  contencanceParcelle: string
-  suf: string[]
-  nature: string[]
-  contenanceSuf: number[]
-  codeDroit: string[]
-  numMajic: string
-  numSiren: string
-  groupe: string
-  codeFormeJuridique: string
-  formeJuridiqueAbregee: string
-  denomination: string
+// Indexes of the multi-valued output columns, in `schema.json` key order.
+const SUF = 8
+const NATURE = 9
+const CONTENANCE_SUF = 10
+const CODE_DROIT = 11
+
+/** Append a value to a multi-valued column, skipping empties (iso to 0.2.8's filter+join). */
+const append = (row: string[], col: number, value: string): void => {
+  if (!value) return
+  row[col] = row[col] ? row[col] + ',' + value : value
 }
 
 /**
- * Parse one department's decoded CSV text and aggregate one row per parcelle.
- * Iso to 0.2.8: multi-line parcelles accumulate SUF / nature / contenance_suf /
- * code_droit, joined with ",". Returns rows as arrays in `schema.json` key order.
+ * Aggregate one department's CSV stream into one row per parcelle, in
+ * `schema.json` key order, yielded in first-appearance order.
+ *
+ * Memory: the whole file used to be held four times over (full text, all parsed
+ * lines, a Parcelle object per row, then a flattened copy) which peaked at ~16x
+ * the input size — over 1.7GB on dept 33 (105MB), blowing the 1024MB heap cap.
+ * Here only the accumulator survives a line: rows are stored in their final
+ * output shape and multi-values grow by string concat, for ~3x the input size.
+ *
+ * The Map has to span the whole file: parcelle lines are NOT contiguous in the
+ * source (on dept 90, 3760 of 29717 parcelles reappear later, up to 647 lines
+ * apart), so flushing on key change would emit duplicate rows.
  */
-export const processDepartmentCsv = (csvText: string): string[][] => {
-  const lines: string[][] = parse(csvText, { delimiter: ';', bom: true })
-  lines.shift() // header
-  const parcelleMap = new Map<string, Parcelle>()
-  for (const line of lines) {
+export async function * aggregateDepartment (input: Readable): AsyncGenerator<string[]> {
+  const parcelles = new Map<string, string[]>()
+
+  const lines = input.pipe(parse({ delimiter: ';', bom: true, from_line: 2 }))
+  for await (const line of lines as AsyncIterable<string[]>) {
     const codeCommune = line[0] + line[2].padStart(5 - line[0].length, '0')
     const codeParcelle = codeCommune + line[4].trim().padStart(3, '0') + line[5].trim().padStart(2, '0') + line[6].padStart(4, '0')
-    if (!parcelleMap.has(codeParcelle)) {
-      parcelleMap.set(codeParcelle, {
-        departement: line[0],
+
+    const suf = line[14]
+    const nature = line[15].split(' - ')[0]
+    const contenanceSuf = Number(line[16]) > 0 ? line[16] : ''
+    const codeDroit = line[17].split(' - ')[0]
+
+    const row = parcelles.get(codeParcelle)
+    if (row === undefined) {
+      parcelles.set(codeParcelle, [
+        line[0],
         codeCommune,
-        nomCommune: line[3],
-        adresse: ((line[7] ? Number(line[7]) + ', ' : '') + (line[11] ? line[11] + ' ' : '') + line[12].replace(/"/g, ' ')).trim(),
+        line[3],
+        ((line[7] ? Number(line[7]) + ', ' : '') + (line[11] ? line[11] + ' ' : '') + line[12].replace(/"/g, ' ')).trim(),
         codeParcelle,
-        codeVoieMajic: line[9],
-        codeVoieRivoli: line[10],
-        contencanceParcelle: line[13],
-        suf: [line[14]],
-        nature: [line[15].split(' - ')[0]],
-        contenanceSuf: [Number(line[16])],
-        codeDroit: [line[17].split(' - ')[0]],
-        numMajic: line[18],
-        numSiren: line[19],
-        groupe: parseGroupe(line[20]),
-        codeFormeJuridique: line[21],
-        formeJuridiqueAbregee: line[22],
-        denomination: line[23]
-      })
+        line[9],
+        line[10],
+        line[13],
+        suf,
+        nature,
+        contenanceSuf,
+        codeDroit,
+        line[18],
+        line[19],
+        parseGroupe(line[20]),
+        line[21],
+        line[22],
+        line[23]
+      ])
     } else {
-      const parcelle = parcelleMap.get(codeParcelle)!
-      parcelle.suf.push(line[14])
-      parcelle.nature.push(line[15].split(' - ')[0])
-      parcelle.contenanceSuf.push(Number(line[16]))
-      parcelle.codeDroit.push(line[17].split(' - ')[0])
+      append(row, SUF, suf)
+      append(row, NATURE, nature)
+      append(row, CONTENANCE_SUF, contenanceSuf)
+      append(row, CODE_DROIT, codeDroit)
     }
   }
-  const rows: string[][] = []
-  for (const parcelle of parcelleMap.values()) {
-    const flat = {
-      ...parcelle,
-      suf: parcelle.suf.filter(s => s.length > 0).join(','),
-      nature: parcelle.nature.filter(n => n.length > 0).join(','),
-      contenanceSuf: parcelle.contenanceSuf.filter(c => c > 0).join(','),
-      codeDroit: parcelle.codeDroit.filter(c => c.length > 0).join(',')
-    }
-    rows.push(Object.values(flat) as string[])
+
+  // Drop each row as it is yielded so the Map shrinks while the output is written.
+  for (const [codeParcelle, row] of parcelles) {
+    parcelles.delete(codeParcelle)
+    yield row
   }
-  return rows
 }
 
 /**
@@ -107,19 +112,23 @@ export const processDepartmentCsv = (csvText: string): string[][] => {
 export default async (processingConfig: ProcessingConfig, tmpDir: string, log: ProcessingContext<ProcessingConfig>['log']): Promise<void> => {
   await log.step('Traitement des données')
 
-  const files = fs.readdirSync(tmpDir).filter(f => f.slice(-4) === '.csv')
+  // Exclude our own output: it also ends in `.csv`, so a re-run over a tmpDir that
+  // was not cleared (clearFiles off, or a retry after a failure) would ingest the
+  // previous multi-GB result as if it were a department file.
+  const files = fs.readdirSync(tmpDir).filter(f => f.slice(-4) === '.csv' && f !== OUTPUT_FILE)
   const depFiles = files.filter(f =>
     !processingConfig.filter ||
     f.includes(processingConfig.filter + '0') ||
     (processingConfig.filter.length === 3 && f.includes(processingConfig.filter))
   )
 
-  const writeStream = fs.openSync(path.join(tmpDir, 'Parcelles des personnes morales.csv'), 'w')
+  const writeStream = fs.createWriteStream(path.join(tmpDir, OUTPUT_FILE))
   try {
     // Output delimiter must be ',' to match the dataset schema's comma-joined
     // header (see execute.ts checkHeader) — production's csv-stringify config
     // leaves `separator` unset, which defaults the join AND the delimiter to ','.
-    fs.writeSync(writeStream, csvStringify([], { header: true, delimiter: ',', columns: fields }))
+    // Header only — `Readable.from([[]])` would stream one *empty record* on top of it.
+    writeStream.write(csvStringifySync([], { header: true, delimiter: ',', columns: fields }))
 
     await log.task('Traitement des fichiers')
     await log.progress('Traitement des fichiers', 0, depFiles.length)
@@ -127,13 +136,16 @@ export default async (processingConfig: ProcessingConfig, tmpDir: string, log: P
     for (const depFile of depFiles) {
       if (shouldBeStopped) break
       await log.info('Traitement du fichier ' + depFile + '...')
-      const csvText = await fs.readFile(path.join(tmpDir, depFile), 'utf-8')
-      const rows = processDepartmentCsv(csvText)
-      fs.writeSync(writeStream, csvStringify(rows, { header: false, delimiter: ',', columns: fields }))
+      await pipeline(
+        aggregateDepartment(fs.createReadStream(path.join(tmpDir, depFile), 'utf-8')),
+        csvStringify({ header: false, delimiter: ',', columns: fields }),
+        writeStream,
+        { end: false }
+      )
       i++
       await log.progress('Traitement des fichiers', i, depFiles.length)
     }
   } finally {
-    fs.closeSync(writeStream)
+    await new Promise<void>((resolve, reject) => writeStream.end((err?: Error | null) => err ? reject(err) : resolve()))
   }
 }
