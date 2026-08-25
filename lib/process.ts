@@ -60,7 +60,12 @@ export async function * aggregateDepartment (input: Readable): AsyncGenerator<st
 
   const lines = input.pipe(parse({ delimiter: ';', bom: true, from_line: 2 }))
   for await (const line of lines as AsyncIterable<string[]>) {
-    const codeCommune = line[0] + line[2].padStart(5 - line[0].length, '0')
+    // INSEE commune codes are 5 chars: 2 for the département + 3 for the commune.
+    // In the DOM the source département is on 3 chars and its commune code already
+    // repeats the 3rd one ("974" + "401" = 97401), so the département is what must
+    // be truncated: concatenating both gave a 6-char commune code and a 15-char
+    // code_parcelle, which matched nothing in the cadastre enrichment.
+    const codeCommune = line[0].trim().slice(0, 2) + line[2].trim().padStart(3, '0')
     const codeParcelle = codeCommune + line[4].trim().padStart(3, '0') + line[5].trim().padStart(2, '0') + line[6].padStart(4, '0')
 
     const suf = line[14]

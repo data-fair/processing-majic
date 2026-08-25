@@ -55,6 +55,19 @@ describe('aggregateDepartment', () => {
   it('builds a 14-char code_parcelle', async () => {
     for (const r of await collect(sample)) assert.equal(String(r[4]).length, 14)
   })
+  it('builds a 14-char code_parcelle in the DOM (3-char department code)', async () => {
+    // Réunion/Mayotte/Antilles/Guyane: département is on 3 chars and the source
+    // commune code already carries the 3rd one ("974" + "401" = INSEE 97401), so
+    // concatenating both gave a 6-char commune and a 15-char code_parcelle, which
+    // matched nothing in the cadastre enrichment.
+    const lines = sample.trimEnd().split('\n')
+    const cols = lines[1].split(';')
+    cols[0] = '974'; cols[2] = '401'; cols[3] = 'LES AVIRONS'
+    const rows = await collect([lines[0], cols.join(';')].join('\n') + '\n')
+    assert.equal(rows[0][1], '97401') // code_commune = code INSEE
+    assert.equal(rows[0][4], '974010000A0018')
+    assert.equal(rows[0][4].length, 14)
+  })
   it('emits rows in first-appearance order', async () => {
     assert.deepEqual((await collect(sample)).map(r => r[0]), ['01', '90', '75'])
   })
