@@ -61,12 +61,18 @@
           "description": "Identifiant du jeu de données à utiliser sur le portail data.gouv.fr (ex: fichiers-des-locaux-et-des-parcelles-des-personnes-morales)",
           "default": "fichiers-des-locaux-et-des-parcelles-des-personnes-morales"
         },
+        "legacy": {
+          "type": "boolean",
+          "title": "Mode legacy (schéma historique)",
+          "description": "Produit le schéma d'avant la v0.4 : 18 colonnes dont `code_droit`, toutes les lignes quel que soit le code droit, et un seul titulaire par parcelle. À n'activer que pour mettre à jour un jeu de données créé avant la v0.4 ; le code droit à extraire est alors ignoré.",
+          "default": false
+        },
         "codeDroit": {
           "type": "string",
           "title": "Code droit à extraire",
           "description": "Un jeu de données par code droit. Par défaut « P » (propriétaires). Une parcelle n'apparaît que si elle possède ce droit ; les colonnes personne (SIREN, dénomination, ...) décrivent uniquement les titulaires de ce droit.",
           "default": "P",
-          "layout": { "cols": 8 },
+          "layout": { "cols": 8, "if": "parent.data.legacy !== true" },
           "oneOf": [
             { "const": "P", "title": "P - Propriétaire" },
             { "const": "N", "title": "N - Nu-propriétaire (associé avec U)" },

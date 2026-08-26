@@ -5,6 +5,7 @@ import os from 'os'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import schema from '../lib/schema.json' with { type: 'json' }
+import legacySchema from '../lib/schema.legacy.json' with { type: 'json' }
 import process from '../lib/process.ts'
 import type { ProcessingConfig } from '#types/processingConfig/index.ts'
 import type { ProcessingContext } from '@data-fair/lib-common-types/processings.js'
@@ -61,6 +62,31 @@ describe('process.ts output header matches the dataset schema, or every producti
       // Make the intent unmissable: the header must be comma-delimited.
       assert.ok(head.startsWith('departement,code_commune,'))
       assert.ok(!head.includes(';'))
+    } finally {
+      await fs.promises.rm(tmpDir, { recursive: true, force: true })
+    }
+  })
+})
+
+// Same contract for the legacy mode: a pre-0.4 dataset is updated in place, so
+// the generated header must match ITS schema, not the modern one. Getting this
+// wrong aborts every legacy run in checkHeader instead of uploading garbage —
+// but it aborts them all the same.
+describe('process.ts honours processingConfig.legacy when writing the header', () => {
+  it('writes the legacy 18-column header, code_droit included', async () => {
+    const tmpDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'processing-majic-legacy-header-'))
+    try {
+      await fs.promises.copyFile(sample, path.join(tmpDir, 'PM_sample.csv'))
+
+      await process({ dataset: {}, legacy: true } as ProcessingConfig, tmpDir, log)
+
+      const content = await fs.promises.readFile(path.join(tmpDir, 'Parcelles des personnes morales.csv'), 'utf8')
+      const head = content.split('\n')[0]
+
+      const fields = legacySchema.map((f: { key: string }) => f.key)
+      const schemaActuel = fields.map((k: string) => `"${k}"`).join(',').replace(/['"]+/g, '')
+      assert.ok(head.includes(schemaActuel.slice(0, head.length - 1)))
+      assert.ok(head.includes(',code_droit,'))
     } finally {
       await fs.promises.rm(tmpDir, { recursive: true, force: true })
     }

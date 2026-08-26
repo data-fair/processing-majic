@@ -1,0 +1,273 @@
+[
+  {
+    "key": "departement",
+    "title": "Département",
+    "type": "string",
+    "x-refersTo": "http://rdf.insee.fr/def/geo#codeDepartement",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false,
+      "textStandard": false
+    },
+    "description": "Code département de la parcelle"
+  },
+  {
+    "key": "code_commune",
+    "title": "Code commune",
+    "type": "string",
+    "x-refersTo": "http://rdf.insee.fr/def/geo#codeCommune",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false,
+      "textStandard": false
+    },
+
+    "description": "Code de la commune de la parcelle"
+  },
+  {
+    "key": "nom_commune",
+    "title": "Nom Commune",
+    "type": "string",
+    "x-refersTo": "http://schema.org/City",
+    "x-capabilities": {
+      "textAgg": false
+    },
+    "description": "Nom de la commune de la parcelle"
+  },
+  {
+    "key": "adresse",
+    "title": "Adresse",
+    "type": "string",
+    "x-refersTo": "http://schema.org/address",
+    "x-capabilities": {
+      "textAgg": false
+    },
+    "description": "Adresse de la parcelle"
+  },
+  {
+    "key": "code_parcelle",
+    "title": "Code parcelle",
+    "type": "string",
+    "x-refersTo": "http://dbpedia.org/ontology/codeLandRegistry",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false,
+      "textStandard": false,
+      "values": false
+    },
+    "description": "Code de la parcelle"
+  },
+  {
+    "key": "code_voie_majic",
+    "title": "Code voie MAJIC",
+    "type": "integer",
+    "description": "Code de la voie dans la base MAJIC"
+  },
+  {
+    "key": "code_voie_rivoli",
+    "title": "Code voie rivoli",
+    "type": "string",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false
+    },
+    "description": "Code de la voie dans la base Rivoli"
+  },
+  {
+    "key": "contenance_parcelle",
+    "title": "Contenance parcelle",
+    "type": "integer",
+    "x-capabilities": {
+      "textStandard": false
+    },
+    "description": "Contenance de la parcelle en centiare (1 ca = 1 m²)" 
+  },
+  {
+    "key": "SUF",
+    "title": "SUF",
+    "type": "string",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false,
+      "textStandard": false
+    },
+    "description": "Subdivision fiscale de la parcelle",
+    "separator": ","
+  },
+  {
+    "key": "nature_culture",
+    "title": "Nature culture",
+    "type": "string",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false,
+      "textStandard": false
+    },
+    "description": "Nature culture de la subdivision fiscale de la parcelle",
+    "x-labels": {
+      "AB": "Terrains à bâtir",
+      "AG": "Terrains d'agrément",
+      "B": "Bois",
+      "BF": "Futaies Feuillues",
+      "BM": "Futaies Mixtes",
+      "BO": "Oseraies",
+      "BP": "Peupleraies",
+      "BR": "Futaies résineuses",
+      "BS": "Taillis sous Futaies",
+      "BT": "Taillis simples",
+      "CA": "Carrières",
+      "CH": "Chemins de fer, Canaux de Navigation",
+      "E": "Eaux",
+      "J": "Jardins",
+      "L": "Landes",
+      "LB": "Landes Boisées",
+      "P": "Prés",
+      "PA": "Pâtures ou Pâturages",
+      "PC": "Pacages ou Pâtis",
+      "PE": "Prés d'embouche",
+      "PH": "Herbages",
+      "PP": "Prés, Pâtures ou Herbages plantes",
+      "S": "Sols",
+      "T": "Terre",
+      "TP": "Terres plantées",
+      "VE": "Vergers",
+      "VI": "Vignes"
+    },
+    "separator": ","
+  },
+  {
+    "key": "contenance_suf",
+    "title": "Contenance SUF",
+    "type": "string",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false,
+      "textStandard": false
+    },
+    "description": "Contenance de la subdivision fiscale en centiare (1 ca = 1 m²)",
+    "separator": ","
+  },
+  {
+    "key": "code_droit",
+    "title": "Code droit",
+    "type": "string",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false,
+      "textStandard": false
+    },
+    "description": "Code droit réel ou particulier attaché à la parcelle",
+    "x-labels": {
+      "P": "Propriétaire",
+      "U": "Usufruitier (associé avec N)",
+      "N": "Nu-propriétaire (associé avec U)",
+      "R": "Bailleur à construction (associé avec R)",
+      "B": "Preneur à construction (associé avec B)",
+      "F": "Foncier (associé avec D ou T)",
+      "T": "Ténuyer (associé avec F)",
+      "D": "Domanier (associé avec F)",
+      "V": "Bailleur d'un bail à réhabilitation (associé avec W)",
+      "W": "Preneur d'un bail à réhabilitation (associé avec V)",
+      "A": "Locataire-Attributaire (associé avec P)",
+      "E": "Emphytéote (associé avec P)",
+      "K": "Antichrésiste (associé avec P)",
+      "L": "Fonctionnaire logé",
+      "G": "Gérant, mandataire, gestionnaire",
+      "S": "Syndic de copropriété",
+      "H": "Associé dans une société en transparence fiscale (associé avec P)",
+      "O": "Autorisation d'occupation temporaire (70 ans)",
+      "J": "Jeune agriculteur",
+      "Q": "Questionnaire taxe sur les bureux (Île-de-France)",
+      "X": "La Poste Occupant et propriétaire",
+      "Y": "La Poste Occupant et non propriétaire",
+      "C": "Fiduciaire",
+      "M": "Occupant d'une parcelle appartenant au département de Mayotte ou à l'Etat (associé avec P)",
+      "Z": "Gestionnaire d'un bien de l'Etat"
+    },
+    "separator": ","
+  },
+  {
+    "key": "numero_majic",
+    "title": "Numéro MAJIC",
+    "type": "string",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false
+    },
+    "description": "numéro personne présent dans l'application majic"
+  },
+  {
+    "key": "numero_siren",
+    "title": "Numéro SIREN",
+    "type": "string",
+    "x-refersTo": "http://dbpedia.org/ontology/siren",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false
+    },
+    "description": "Numéro SIREN du propriétaire de la parcelle"
+  },
+  {
+    "key": "groupe_personne",
+    "title": "Groupe personne",
+    "type": "string",
+    "x-capabilities": {
+      "textStandard": false
+    },
+    "description": "Groupe de personne auquel appartient le propriétaire de la parcelle",
+    "x-transform": {
+      "type": "string"
+    },
+    "x-labels": {
+      "0": "Personnes morales non remarquables",
+      "1": "État",
+      "2": "Région",
+      "3": "Département",
+      "4": "Commune",
+      "5": "Office HLM",
+      "6": "Personnes morales représentant des sociétés d'économie mixte",
+      "7": "Copropriétaires",
+      "8": "Associés",
+      "9": "Établissements publics ou organismes associés"
+    }
+  },
+  {
+    "key": "code_forme_juridique",
+    "title": "Code forme juridique",
+    "type": "string",
+    "x-capabilities": {
+      "textStandard": false
+    },
+    "description": "Forme juridique du propriétaire de la parcelle"
+  },
+  {
+    "key": "forme_juridique_abregee",
+    "title": "Forme juridique abrégée",
+    "type": "string",
+    "x-capabilities": {
+      "insensitive": false,
+      "textAgg": false,
+      "text": false
+    },
+    "description": "Forme juridique abrégée du propriétaire de la parcelle"
+  },
+  {
+    "key": "denomination",
+    "title": "Dénomination",
+    "type": "string",
+    "x-capabilities": {
+      "textAgg": false
+    },
+    "description": "Dénomination du propriétaire de la parcelle"
+  }
+]

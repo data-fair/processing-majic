@@ -5,9 +5,7 @@ import FormData from 'form-data'
 import type { AxiosInstance } from 'axios'
 import type { ProcessingContext } from '@data-fair/lib-common-types/processings.js'
 import type { ProcessingConfig } from '#types/processingConfig/index.ts'
-import schema from './schema.json' with { type: 'json' }
-
-export const uploadSchema = schema
+import { schemaFor } from './output-schema.ts'
 
 export const displayBytes = (aSize: number): string => {
   aSize = Math.abs(parseInt(String(aSize), 10))
@@ -32,10 +30,10 @@ export default async (
     await log.step('Mise à jour du jeu de données')
     if (processingConfig.forceUpdate) {
       await log.info('Mise à jour du schéma')
-      formData.append('schema', JSON.stringify(uploadSchema))
+      formData.append('schema', JSON.stringify(schemaFor(processingConfig)))
     }
   } else {
-    formData.append('schema', JSON.stringify(uploadSchema))
+    formData.append('schema', JSON.stringify(schemaFor(processingConfig)))
     formData.append('title', processingConfig.dataset?.title || 'Parcelles des personnes morales')
     await log.step('Création du jeu de données')
   }
