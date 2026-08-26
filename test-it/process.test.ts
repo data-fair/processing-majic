@@ -10,9 +10,9 @@ import processDepartments, { parseGroupe, aggregateDepartment, OUTPUT_FILE } fro
 const sample = fs.readFileSync(fileURLToPath(new URL('./resources/PM_sample.csv', import.meta.url)), 'utf8')
 
 /** Collect the streamed aggregation into an array, since the tests assert on rows. */
-const collect = async (csvText: string): Promise<string[][]> => {
+const collect = async (csvText: string, codeDroit = 'P'): Promise<string[][]> => {
   const rows: string[][] = []
-  for await (const row of aggregateDepartment(Readable.from([csvText]))) rows.push(row)
+  for await (const row of aggregateDepartment(Readable.from([csvText]), codeDroit)) rows.push(row)
   return rows
 }
 
@@ -32,25 +32,50 @@ describe('parseGroupe', () => {
 })
 
 describe('aggregateDepartment', () => {
-  // r[4] = code_parcelle
+  // Output columns (code_droit removed): r[4]=code_parcelle, r[8..10]=SUF/nature/
+  // contenance_suf, r[11..16]=numero_majic/numero_siren/groupe_personne/
+  // code_forme_juridique/forme_juridique_abregee/denomination.
 
-  it('produces one row per parcelle (aggregates SUF lines)', async () => {
-    // dept01 parcelle appears on 2 SUF lines -> 1 aggregated row
-    assert.equal((await collect(sample)).length, 3)
+  it('keeps only parcelles that carry the requested code droit (P)', async () => {
+    // sample: dept01 (2 P lines) + dept90 (1 P line) -> 2 rows; dept75 is a G
+    // line (Aéroport de Paris) so it is dropped from the propriétaires dataset.
+    assert.deepEqual((await collect(sample, 'P')).map(r => r[0]), ['01', '90'])
+  })
+  it('produces a different dataset for another code droit (G)', async () => {
+    const rows = await collect(sample, 'G')
+    assert.equal(rows.length, 1)
+    assert.equal(rows[0][0], '75')
+    assert.equal(rows[0][16], 'AÉROPORT DE PARIS') // denomination
   })
   it('reduces groupe_personne to a bare code (fixes the map)', async () => {
-    for (const r of await collect(sample)) assert.match(r[14], /^[0-9]$/) // r[14] = groupe_personne
+    for (const r of await collect(sample)) assert.match(r[13], /^[0-9]$/) // r[13] = groupe_personne
   })
   it('decodes UTF-8: denomination keeps its accents', async () => {
     const dept01 = (await collect(sample)).find(r => r[0] === '01')!
-    assert.equal(dept01[17], 'SOCIÉTÉ IMMOBILIÈRE DU HÉRISSON') // r[17] = denomination
+    assert.equal(dept01[16], 'SOCIÉTÉ IMMOBILIÈRE DU HÉRISSON') // r[16] = denomination
   })
-  it('joins multi-valued fields with ","', async () => {
+  it('joins the subdivision fields with ","', async () => {
     const dept01 = (await collect(sample)).find(r => r[0] === '01')!
     assert.equal(dept01[8], 'A,B')      // SUF
     assert.equal(dept01[9], 'BS,T')     // nature_culture (codes only)
     assert.equal(dept01[10], '30,30')   // contenance_suf
-    assert.equal(dept01[11], 'P,P')     // code_droit — no dedup, no codeDroit filter (that is ticket #1371, out of scope)
+  })
+  it('deduplicates a person appearing on several subdivision lines', async () => {
+    // dept01 has the same owner (PBBQWS) on both SUF lines -> one person value
+    const dept01 = (await collect(sample)).find(r => r[0] === '01')!
+    assert.equal(dept01[11], 'PBBQWS')                            // numero_majic
+    assert.equal(dept01[16], 'SOCIÉTÉ IMMOBILIÈRE DU HÉRISSON')   // denomination
+  })
+  it('multi-values and aligns the 6 person columns when a parcelle has several owners', async () => {
+    // Give the dept01 parcelle a second, different owner on its 2nd SUF line.
+    const lines = sample.trimEnd().split('\n')
+    const colsB = lines[2].split(';')
+    colsB[18] = 'NEWMAJIC'; colsB[19] = '999888777'; colsB[23] = 'VILLE DE TEST'
+    const [row] = await collect([lines[0], lines[1], colsB.join(';')].join('\n') + '\n')
+    assert.equal(row[11], 'PBBQWS,NEWMAJIC')                                     // numero_majic
+    assert.equal(row[12], 'U21651730,999888777')                                // numero_siren
+    assert.equal(row[16], 'SOCIÉTÉ IMMOBILIÈRE DU HÉRISSON,VILLE DE TEST')       // denomination aligned
+    assert.equal(row[8], 'A,B')                                                  // subdivisions still merged
   })
   it('builds a 14-char code_parcelle', async () => {
     for (const r of await collect(sample)) assert.equal(String(r[4]).length, 14)
@@ -69,7 +94,7 @@ describe('aggregateDepartment', () => {
     assert.equal(rows[0][4].length, 14)
   })
   it('emits rows in first-appearance order', async () => {
-    assert.deepEqual((await collect(sample)).map(r => r[0]), ['01', '90', '75'])
+    assert.deepEqual((await collect(sample)).map(r => r[0]), ['01', '90'])
   })
 
   it('merges parcelle lines that are NOT contiguous in the source', async () => {
@@ -79,28 +104,28 @@ describe('aggregateDepartment', () => {
     const lines = sample.trimEnd().split('\n')
     const interleaved = [lines[0], lines[1], lines[3], lines[4], lines[2]].join('\n') + '\n'
     const rows = await collect(interleaved)
-    assert.equal(rows.length, 3)
+    assert.equal(rows.length, 2) // dept01 (merged) + dept90; dept75 is a G line
     const dept01 = rows.find(r => r[0] === '01')!
     assert.equal(dept01[8], 'A,B') // both SUF lines merged despite the gap
     assert.equal(dept01[9], 'BS,T')
   })
 
-  it('leaves multi-valued fields empty when every source value is empty', async () => {
+  it('leaves subdivision fields empty when every source value is empty', async () => {
     const lines = sample.trimEnd().split('\n')
     const cols = lines[3].split(';')
-    cols[14] = ''; cols[15] = ''; cols[16] = ''; cols[17] = '' // SUF / nature / contenance_suf / code_droit
+    cols[14] = ''; cols[15] = ''; cols[16] = '' // SUF / nature / contenance_suf (droit kept = P)
     const rows = await collect([lines[0], cols.join(';')].join('\n') + '\n')
     assert.equal(rows.length, 1)
-    assert.deepEqual(rows[0].slice(8, 12), ['', '', '', ''])
+    assert.deepEqual(rows[0].slice(8, 11), ['', '', ''])
   })
 
-  it('drops empty and zero values from multi-valued fields', async () => {
+  it('drops empty and zero values from the subdivision fields', async () => {
     const lines = sample.trimEnd().split('\n')
     const cols = lines[2].split(';') // second SUF line of the dept01 parcelle
-    cols[14] = ''; cols[15] = ''; cols[16] = '0'; cols[17] = ''
+    cols[14] = ''; cols[15] = ''; cols[16] = '0' // droit kept = P
     const rows = await collect([lines[0], lines[1], cols.join(';')].join('\n') + '\n')
     assert.equal(rows.length, 1)
-    assert.deepEqual(rows[0].slice(8, 12), ['A', 'BS', '30', 'P'])
+    assert.deepEqual(rows[0].slice(8, 11), ['A', 'BS', '30'])
   })
 })
 
@@ -115,7 +140,7 @@ describe('process (full department run)', () => {
     const out = fs.readFileSync(path.join(tmpDir, OUTPUT_FILE), 'utf8').split('\n')
     assert.match(out[0], /^departement,code_commune,/)
     assert.notEqual(out[1], '') // a blank second line means an empty record was streamed
-    assert.equal(out.filter(l => l !== '').length, 4) // header + 3 parcelles
+    assert.equal(out.filter(l => l !== '').length, 3) // header + 2 propriétaire parcelles (dept75 is a G line)
     fs.rmSync(tmpDir, { recursive: true })
   })
 

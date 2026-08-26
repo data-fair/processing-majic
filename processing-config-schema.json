@@ -58,12 +58,48 @@
         "datasetID": {
           "type": "string",
           "title": "ID dataset data.gouv.fr",
-          "description": "Identifiant du jeu de données à utiliser sur le portail data.gouv.fr (ex: fichiers-des-locaux-et-des-parcelles-des-personnes-morales)"
+          "description": "Identifiant du jeu de données à utiliser sur le portail data.gouv.fr (ex: fichiers-des-locaux-et-des-parcelles-des-personnes-morales)",
+          "default": "fichiers-des-locaux-et-des-parcelles-des-personnes-morales"
+        },
+        "codeDroit": {
+          "type": "string",
+          "title": "Code droit à extraire",
+          "description": "Un jeu de données par code droit. Par défaut « P » (propriétaires). Une parcelle n'apparaît que si elle possède ce droit ; les colonnes personne (SIREN, dénomination, ...) décrivent uniquement les titulaires de ce droit.",
+          "default": "P",
+          "layout": { "cols": 8 },
+          "oneOf": [
+            { "const": "P", "title": "P - Propriétaire" },
+            { "const": "N", "title": "N - Nu-propriétaire (associé avec U)" },
+            { "const": "U", "title": "U - Usufruitier (associé avec N)" },
+            { "const": "R", "title": "R - Bailleur à construction" },
+            { "const": "B", "title": "B - Preneur à construction" },
+            { "const": "F", "title": "F - Foncier (associé avec D ou T)" },
+            { "const": "T", "title": "T - Ténuyer (associé avec F)" },
+            { "const": "D", "title": "D - Domanier (associé avec F)" },
+            { "const": "V", "title": "V - Bailleur d'un bail à réhabilitation (associé avec W)" },
+            { "const": "W", "title": "W - Preneur d'un bail à réhabilitation (associé avec V)" },
+            { "const": "A", "title": "A - Locataire-Attributaire (associé avec P)" },
+            { "const": "E", "title": "E - Emphytéote (associé avec P)" },
+            { "const": "K", "title": "K - Antichrésiste (associé avec P)" },
+            { "const": "L", "title": "L - Fonctionnaire logé" },
+            { "const": "G", "title": "G - Gérant, mandataire, gestionnaire" },
+            { "const": "S", "title": "S - Syndic de copropriété" },
+            { "const": "H", "title": "H - Associé dans une société en transparence fiscale (associé avec P)" },
+            { "const": "O", "title": "O - Autorisation d'occupation temporaire (70 ans)" },
+            { "const": "J", "title": "J - Jeune agriculteur" },
+            { "const": "Q", "title": "Q - Questionnaire taxe sur les bureaux (Île-de-France)" },
+            { "const": "X", "title": "X - La Poste Occupant et propriétaire" },
+            { "const": "Y", "title": "Y - La Poste Occupant et non propriétaire" },
+            { "const": "C", "title": "C - Fiduciaire" },
+            { "const": "M", "title": "M - Occupant d'une parcelle appartenant au département de Mayotte ou à l'Etat (associé avec P)" },
+            { "const": "Z", "title": "Z - Gestionnaire d'un bien de l'Etat" }
+          ]
         },
         "filter": {
           "type": "string",
           "title": "Département à utiliser",
-          "description": "Le département doit être au format 2 chiffres (ex: 56, 01) ou 3 chiffres pour les DROM-COM (ex: 974). Laissez vide pour tous les départements."
+          "description": "Le département doit être au format 2 chiffres (ex: 56, 01) ou 3 chiffres pour les DROM-COM (ex: 974). Laissez vide pour tous les départements.",
+          "layout": { "cols": 4 }
         },
         "clearFiles": {
           "type": "boolean",

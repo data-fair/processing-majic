@@ -3,12 +3,15 @@ import assert from 'assert'
 import schema from '../lib/schema.json' with { type: 'json' }
 
 describe('output schema (frozen — the map depends on it)', () => {
+  // code_droit is gone: one dataset per code droit (selected in the processing
+  // config), so the column would be constant. The 6 person columns are now
+  // multi-valued (a parcelle can have several owners) — see ticket #1371.
   it('has exactly these keys, in this order', () => {
     const keys = schema.map((f: { key: string }) => f.key)
     assert.deepEqual(keys, [
       'departement', 'code_commune', 'nom_commune', 'adresse', 'code_parcelle',
       'code_voie_majic', 'code_voie_rivoli', 'contenance_parcelle', 'SUF',
-      'nature_culture', 'contenance_suf', 'code_droit', 'numero_majic',
+      'nature_culture', 'contenance_suf', 'numero_majic',
       'numero_siren', 'groupe_personne', 'code_forme_juridique',
       'forme_juridique_abregee', 'denomination'
     ])
@@ -16,7 +19,11 @@ describe('output schema (frozen — the map depends on it)', () => {
 
   it('declares "," as the multi-value separator on the aggregated fields', () => {
     const withSep = schema.filter((f: { separator?: string }) => f.separator === ',').map((f: { key: string }) => f.key)
-    assert.deepEqual(withSep, ['SUF', 'nature_culture', 'contenance_suf', 'code_droit'])
+    assert.deepEqual(withSep, [
+      'SUF', 'nature_culture', 'contenance_suf',
+      'numero_majic', 'numero_siren', 'groupe_personne',
+      'code_forme_juridique', 'forme_juridique_abregee', 'denomination'
+    ])
   })
 
   // These types must match the LIVE production dataset, otherwise enabling
@@ -38,7 +45,6 @@ describe('output schema (frozen — the map depends on it)', () => {
       SUF: 'string',
       nature_culture: 'string',
       contenance_suf: 'string',
-      code_droit: 'string',
       numero_majic: 'string',
       numero_siren: 'string',
       groupe_personne: 'string',

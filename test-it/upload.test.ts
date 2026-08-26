@@ -17,7 +17,11 @@ describe('displayBytes', () => {
 describe('uploadSchema (schema sent on dataset creation/forced update)', () => {
   it('carries the "," separator on the aggregated fields', () => {
     const withSep = uploadSchema.filter((f: { separator?: string }) => f.separator === ',').map((f: { key: string }) => f.key)
-    assert.deepEqual(withSep, ['SUF', 'nature_culture', 'contenance_suf', 'code_droit'])
+    assert.deepEqual(withSep, [
+      'SUF', 'nature_culture', 'contenance_suf',
+      'numero_majic', 'numero_siren', 'groupe_personne',
+      'code_forme_juridique', 'forme_juridique_abregee', 'denomination'
+    ])
   })
   it('keeps the same field count and keys as lib/schema.json', () => {
     assert.equal(uploadSchema.length, schema.length)

@@ -155,46 +155,6 @@
     "separator": ","
   },
   {
-    "key": "code_droit",
-    "title": "Code droit",
-    "type": "string",
-    "x-capabilities": {
-      "insensitive": false,
-      "textAgg": false,
-      "text": false,
-      "textStandard": false
-    },
-    "description": "Code droit réel ou particulier attaché à la parcelle",
-    "x-labels": {
-      "P": "Propriétaire",
-      "U": "Usufruitier (associé avec N)",
-      "N": "Nu-propriétaire (associé avec U)",
-      "R": "Bailleur à construction (associé avec R)",
-      "B": "Preneur à construction (associé avec B)",
-      "F": "Foncier (associé avec D ou T)",
-      "T": "Ténuyer (associé avec F)",
-      "D": "Domanier (associé avec F)",
-      "V": "Bailleur d'un bail à réhabilitation (associé avec W)",
-      "W": "Preneur d'un bail à réhabilitation (associé avec V)",
-      "A": "Locataire-Attributaire (associé avec P)",
-      "E": "Emphytéote (associé avec P)",
-      "K": "Antichrésiste (associé avec P)",
-      "L": "Fonctionnaire logé",
-      "G": "Gérant, mandataire, gestionnaire",
-      "S": "Syndic de copropriété",
-      "H": "Associé dans une société en transparence fiscale (associé avec P)",
-      "O": "Autorisation d'occupation temporaire (70 ans)",
-      "J": "Jeune agriculteur",
-      "Q": "Questionnaire taxe sur les bureux (Île-de-France)",
-      "X": "La Poste Occupant et propriétaire",
-      "Y": "La Poste Occupant et non propriétaire",
-      "C": "Fiduciaire",
-      "M": "Occupant d'une parcelle appartenant au département de Mayotte ou à l'Etat (associé avec P)",
-      "Z": "Gestionnaire d'un bien de l'Etat"
-    },
-    "separator": ","
-  },
-  {
     "key": "numero_majic",
     "title": "Numéro MAJIC",
     "type": "string",
@@ -203,7 +163,8 @@
       "textAgg": false,
       "text": false
     },
-    "description": "numéro personne présent dans l'application majic"
+    "description": "numéro personne présent dans l'application majic",
+    "separator": ","
   },
   {
     "key": "numero_siren",
@@ -215,7 +176,8 @@
       "textAgg": false,
       "text": false
     },
-    "description": "Numéro SIREN du propriétaire de la parcelle"
+    "description": "Numéro SIREN du titulaire du droit sur la parcelle",
+    "separator": ","
   },
   {
     "key": "groupe_personne",
@@ -224,7 +186,7 @@
     "x-capabilities": {
       "textStandard": false
     },
-    "description": "Groupe de personne auquel appartient le propriétaire de la parcelle",
+    "description": "Groupe de personne auquel appartient le titulaire du droit sur la parcelle",
     "x-transform": {
       "type": "string"
     },
@@ -239,7 +201,8 @@
       "7": "Copropriétaires",
       "8": "Associés",
       "9": "Établissements publics ou organismes associés"
-    }
+    },
+    "separator": ","
   },
   {
     "key": "code_forme_juridique",
@@ -248,7 +211,8 @@
     "x-capabilities": {
       "textStandard": false
     },
-    "description": "Forme juridique du propriétaire de la parcelle"
+    "description": "Forme juridique du titulaire du droit sur la parcelle",
+    "separator": ","
   },
   {
     "key": "forme_juridique_abregee",
@@ -259,7 +223,8 @@
       "textAgg": false,
       "text": false
     },
-    "description": "Forme juridique abrégée du propriétaire de la parcelle"
+    "description": "Forme juridique abrégée du titulaire du droit sur la parcelle",
+    "separator": ","
   },
   {
     "key": "denomination",
@@ -268,6 +233,7 @@
     "x-capabilities": {
       "textAgg": false
     },
-    "description": "Dénomination du propriétaire de la parcelle"
+    "description": "Dénomination du titulaire du droit sur la parcelle",
+    "separator": ","
   }
 ]
