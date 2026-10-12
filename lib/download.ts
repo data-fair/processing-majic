@@ -30,6 +30,16 @@ export const selectLatestYearFiles = (resources: { url: string }[], currentYear:
   return { year, urls }
 }
 
+/**
+ * unzip restores the symbolic links of an archive: reading or writing one of
+ * them would reach a file of the worker outside of the tmp directory.
+ */
+export const removeSymlinks = async (dir: string): Promise<void> => {
+  for (const f of await fs.readdir(dir)) {
+    if ((await fs.lstat(path.join(dir, f))).isSymbolicLink()) await fs.remove(path.join(dir, f))
+  }
+}
+
 export default async (processingConfig: ProcessingConfig, tmpDir: string, axios: AxiosInstance, log: ProcessingContext<ProcessingConfig>['log']): Promise<void> => {
   await log.step('Téléchargement des données')
   await log.info('Filtrage des dernières données')
@@ -69,6 +79,7 @@ export default async (processingConfig: ProcessingConfig, tmpDir: string, axios:
     } catch {
       await log.warning('Impossible d\'extraire l\'archive, le fichier est peut-être déjà extrait')
     }
+    await removeSymlinks(tmpDir)
     await log.info('Décompression terminée')
     await fs.remove(file)
   }
